@@ -14,20 +14,24 @@ $(MODULE_NAME)-objs := $(OBJS)
 
 ccflags-y := -O0 -g
 
-$(MODULE): all
+module: $(MODULE)
+all: module
 
-all:
+$(MODULE):
 	make -C $(MODULE_BUILD_DIR) M=$(PWD) modules
 
 clean: unload
 	make -C $(MODULE_BUILD_DIR) M=$(PWD) clean
 
 load: $(MODULE) unload
-	sudo insmod $(MODULE_NAME).ko
+	sudo insmod $(MODULE) $(loadparams)
+
+info: $(MODULE)
+	sudo modinfo $(MODULE)
 
 unload:
 	if lsmod | grep -qP "^$(MODULE_NAME)[ \t]*[0-9]+"; then \
-		sudo rmmod $(MODULE_NAME).ko; \
+		sudo rmmod $(MODULE); \
 	fi
 
 cycle:
