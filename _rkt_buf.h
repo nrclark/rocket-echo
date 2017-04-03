@@ -22,12 +22,14 @@ typedef struct rkt_buf {
  * @param[in,out] ptr Pointer to rkt_buf instance to initialize.
  * @param[in] buffer Pointer to memory that the rkt_buf will use for storage.
  * @param[in] size Size (in bytes) of the supplied buffer. */
+
 void rkt_buf_init(rkt_buf * ptr, char * buffer, unsigned int size);
 
 /** @brief Returns the current level of the rkt_buf instance.
  * @param[in] ptr Pointer to target rkt_buf instance.
  * @param[in] size Size (in bytes) of the supplied buffer.
  * @returns Number of bytes waiting to be read back. */
+
 unsigned int rkt_buf_level(rkt_buf *ptr);
 
 /** @brief Reads data from a rkt_buf instance into an output buffer.
@@ -36,6 +38,7 @@ unsigned int rkt_buf_level(rkt_buf *ptr);
  * @param[in] count Number of bytes to read out from the rkt_buf.
  * @returns Status of command.
  * @retval 0 Exit success (currently the only implemented return code) */
+
 int rkt_buf_read(rkt_buf *ptr, char *target, unsigned int count);
 
 /** @brief Reads data from a rkt_buf instance into an output buffer.
@@ -44,7 +47,7 @@ int rkt_buf_read(rkt_buf *ptr, char *target, unsigned int count);
  * @param[in] count Number of bytes to read out from the rkt_buf.
  * @returns Status of command.
  * @retval 0 Exit success (currently the only implemented return code) */
+
 int rkt_buf_write(rkt_buf *ptr, char const * source, unsigned int size);
 
 #endif
-
