@@ -1,4 +1,4 @@
-/*  
+/*
  *  hello-1.c - The simplest kernel module.
  */
 #include <linux/module.h>   /* Needed by all modules */
@@ -11,7 +11,6 @@ MODULE_DESCRIPTION("The GREATEST MODULE in the world");
 
 static int __init my_init(void) {
     printk(KERN_INFO "Hello, world %d\n", 2);
-    printk(KERN_INFO "Dummy result is: %d\n", dummy_function(53));
     return 0;
 }
 

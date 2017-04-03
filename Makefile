@@ -1,19 +1,35 @@
 MODULE_NAME := hello
-SOURCES := hello.c dummy.c
+SOURCES := hello-main.c dummy.c
 
+MODULE := $(MODULE_NAME).ko
 MODULE_BUILD_DIR := /lib/modules/$(shell uname -r)/build
-EXTRA_OBJS := $(filter-out $(MODULE_NAME).%,$(SOURCES:%.c=%.o))
+
+ifneq "$(filter $(MODULE_NAME).%,$(SOURCES))" ""
+$(error Module name '$(MODULE_NAME)' is an invalid base filename for sources)
+endif
+
+OBJS := $(SOURCES:%.c=%.o)
 obj-m += $(MODULE_NAME).o
-$(MODULE_NAME)-objs := $(EXTRA_OBJS)
+$(MODULE_NAME)-objs := $(OBJS)
+
+ccflags-y := -O0 -g
+
+$(MODULE): all
 
 all:
 	make -C $(MODULE_BUILD_DIR) M=$(PWD) modules
 
-clean:
+clean: unload
 	make -C $(MODULE_BUILD_DIR) M=$(PWD) clean
 
-load:
+load: $(MODULE) unload
 	sudo insmod $(MODULE_NAME).ko
 
 unload:
-	sudo rmmod $(MODULE_NAME).ko
+	if lsmod | grep -qP "^$(MODULE_NAME)[ \t]*[0-9]+"; then \
+		sudo rmmod $(MODULE_NAME).ko; \
+	fi
+
+cycle:
+	$(MAKE) load
+	$(MAKE) unload
