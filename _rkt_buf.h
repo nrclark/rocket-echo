@@ -1,3 +1,12 @@
+/**
+ * @file rkt_buf.h
+ * @author Nick Clark
+ * @date 03 April 2017
+ * @brief Header file for Rocket-echo's ring buffer implementation.
+ *
+ * This file contains the typedefs and prototypes for the ring-buffer
+ * used by Rocket-echo. */
+
 #ifndef _RKT_BUF_H_
 #define _RKT_BUF_H_
 

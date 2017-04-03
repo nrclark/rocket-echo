@@ -1,3 +1,14 @@
+/**
+ * @file rkt_buf.c
+ * @author Nick Clark
+ * @date 03 April 2017
+ * @brief Ring-buffer implementation for Rocket-echo kernel module.
+ *
+ * This file contains the ring-buffer implementation used in Rocket-echo.
+ * It can be compiled/tested as a standalone module (using memcpy for
+ * moving data) or as part of a kernel module (using copy_to_user/copy_from_user
+ * for moving data). */
+
 #ifdef KERNEL_MODE
 #include <linux/string.h>
 #include <linux/types.h>
