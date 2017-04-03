@@ -1,5 +1,5 @@
 MODULE_NAME := hello
-SOURCES := hello-main.c dummy.c
+SOURCES := hello-main.c dummy.c dummy.h
 
 MODULE := $(MODULE_NAME).ko
 MODULE_BUILD_DIR := /lib/modules/$(shell uname -r)/build
@@ -8,7 +8,7 @@ ifneq "$(filter $(MODULE_NAME).%,$(SOURCES))" ""
 $(error Module name '$(MODULE_NAME)' is an invalid base filename for sources)
 endif
 
-OBJS := $(SOURCES:%.c=%.o)
+OBJS := $(filter %.o,$(SOURCES:%.c=%.o))
 obj-m += $(MODULE_NAME).o
 $(MODULE_NAME)-objs := $(OBJS)
 
@@ -17,7 +17,7 @@ ccflags-y := -O0 -g
 module: $(MODULE)
 all: module
 
-$(MODULE):
+$(MODULE): $(SOURCES)
 	make -C $(MODULE_BUILD_DIR) M=$(PWD) modules
 
 clean: unload
