@@ -62,7 +62,7 @@ inline static unsigned int copy_out(char *dest, char const *source, unsigned int
 #endif
 }
 
-/** @detail This function doesn't actually take any action other than
+/** @details This function doesn't actually take any action other than
  * configuring the initial contents of an rkt_buf instance. The actual storage
  * buffer must be allocated elsewhere and supplied to this function. */
 void rkt_buf_init(rkt_buf * ptr, char * buffer, unsigned int size)
@@ -73,7 +73,7 @@ void rkt_buf_init(rkt_buf * ptr, char * buffer, unsigned int size)
     ptr->end = buffer + size;
 }
 
-/** @detail This function's output should be considered approximate in situations
+/** @details This function's output should be considered approximate in situations
  * where reads and writes are happening asynchronously to each other and to this
  * function. The read and write pointers are copied at the beginning of the function,
  * so the actual values could theoretically change in a different context while this
@@ -92,7 +92,7 @@ unsigned int rkt_buf_level(rkt_buf *ptr)
     return level;
 }
 
-/** @detail This function uses copy_out() to move data, which allows it to be tested
+/** @details This function uses copy_out() to move data, which allows it to be tested
  * in user-mode before taking it into kernel space. The function doesn't currently
  * do any underflow-checking, so that is left as an exercise to the caller. */
 int rkt_buf_read(rkt_buf *ptr, char *target, unsigned int count)
@@ -119,7 +119,7 @@ int rkt_buf_read(rkt_buf *ptr, char *target, unsigned int count)
     return 0;
 }
 
-/** @detail This function uses copy_in() to move data, which allows it to be tested
+/** @details This function uses copy_in() to move data, which allows it to be tested
  * in user-mode before taking it into kernel space. The function doesn't currently
  * do any overflow-checking, so that is left as an exercise to the caller. */
 int rkt_buf_write(rkt_buf *ptr, char const * source, unsigned int count)
