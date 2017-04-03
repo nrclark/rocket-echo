@@ -1,5 +1,5 @@
 MODULE_NAME := hello
-SOURCES := hello-1.c dummy.c
+SOURCES := hello.c dummy.c
 
 MODULE_BUILD_DIR := /lib/modules/$(shell uname -r)/build
 OBJS := $(SOURCES:%.c=%.o)
