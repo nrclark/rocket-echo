@@ -1,9 +1,19 @@
-obj-m += hello-1.o
+MODULE_NAME := hello
+SOURCES := hello-1.c dummy.c
 
-MOD_MAKE := make -C /lib/modules/$(shell uname -r)/build M=$(PWD)
+MODULE_BUILD_DIR := /lib/modules/$(shell uname -r)/build
+OBJS := $(SOURCES:%.c=%.o)
+obj-m += $(MODULE_NAME).o
+$(MODULE_NAME)-objs := $(OBJS)
 
 all:
-	$(MOD_MAKE) modules
+	make -C $(MODULE_BUILD_DIR) M=$(PWD) modules
 
 clean:
-	$(MOD_MAKE) clean
+	make -C $(MODULE_BUILD_DIR) M=$(PWD) clean
+
+load:
+	sudo insmod $(MODULE_NAME).ko
+
+unload:
+	sudo rmmod $(MODULE_NAME).ko
