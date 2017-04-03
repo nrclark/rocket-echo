@@ -26,7 +26,7 @@ static int __init my_init(void) {
     #pragma GCC diagnostic ignored "-Wdate-time"
     printk(KERN_INFO "Built on: " __DATE__ " at " __TIME__);
     #pragma GCC diagnostic pop
-    printk("What's up, %s?", name);
+    printk("What's up, %s?\n", name);
     return 0;
 }
 
