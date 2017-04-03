@@ -1,8 +1,13 @@
-/*
- *  hello-1.c - The simplest kernel module.
- */
-#include <linux/module.h>   /* Needed by all modules */
-#include <linux/kernel.h>   /* Needed for KERN_INFO */
+/**
+ * @file    hello-main.c
+ * @author  Nick Clark
+ * @date    03-April-2017
+ * @version 0.1
+ * @brief  This is a simple printk-based kernel module.
+*/
+
+#include <linux/module.h>
+#include <linux/kernel.h>
 #include "dummy.h"
 
 MODULE_LICENSE("GPL");
