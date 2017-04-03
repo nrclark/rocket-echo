@@ -5,7 +5,7 @@
  * @version 0.1
  * @brief  This is a simple printk-based kernel module.
 */
-
+#include <linux/init.h>
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include "dummy.h"
@@ -13,6 +13,11 @@
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Nick Clark");
 MODULE_DESCRIPTION("The GREATEST MODULE in the world");
+MODULE_VERSION("0.1");
+
+static char *name = "Mitten face";
+module_param(name, charp, S_IRUGO); // IRUGO='read' for user, group, other
+MODULE_PARM_DESC(name, "Your name, you heathen swine");
 
 static int __init my_init(void) {
     printk(KERN_INFO "Hello, world %d\n", 2);
@@ -21,6 +26,7 @@ static int __init my_init(void) {
     #pragma GCC diagnostic ignored "-Wdate-time"
     printk(KERN_INFO "Built on: " __DATE__ " at " __TIME__);
     #pragma GCC diagnostic pop
+    printk("What's up, %s?", name);
     return 0;
 }
 
