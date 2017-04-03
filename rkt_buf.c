@@ -20,7 +20,8 @@
 
 #include "_rkt_buf.h"
 
-inline static int copy_in(char *dest, char *source, unsigned int size) {
+inline static int copy_in(char *dest, char const *source, unsigned int size)
+{
 #ifdef KERNEL
     int errcount;
     errcount = copy_to_user(dest, source, size);
@@ -34,7 +35,8 @@ inline static int copy_in(char *dest, char *source, unsigned int size) {
 #endif
 }
 
-inline static int copy_out(char *dest, char *source, unsigned int size) {
+inline static int copy_out(char *dest, char const *source, unsigned int size)
+{
 #ifdef KERNEL
     int errcount;
     errcount = copy_from_user(dest, source, size);
@@ -48,29 +50,31 @@ inline static int copy_out(char *dest, char *source, unsigned int size) {
 #endif
 }
 
-void rkt_buf_init(rkt_buf * ptr, char * buffer, unsigned int size) {
+void rkt_buf_init(rkt_buf * ptr, char * buffer, unsigned int size)
+{
     ptr->top = buffer;
     ptr->read_ptr = buffer;
     ptr->write_ptr = buffer;
     ptr->end = buffer + size;
 }
 
-unsigned int rkt_buf_level(rkt_buf *ptr) {
+unsigned int rkt_buf_level(rkt_buf *ptr)
+{
     uintptr_t read_ptr = (uintptr_t) ptr->read_ptr;
     uintptr_t write_ptr = (uintptr_t) ptr->write_ptr;
     unsigned int level;
 
     if(write_ptr >= read_ptr) {
         level = (write_ptr - read_ptr);
-    }
-    else {
+    } else {
         level = ((write_ptr - (uintptr_t)ptr->top) + (uintptr_t)ptr->end) - read_ptr;
     }
     return level;
 }
 
-int rkt_buf_read(rkt_buf *ptr, char *out, unsigned int size) {
-    unsigned int remaining = size;
+int rkt_buf_read(rkt_buf *ptr, char *target, unsigned int count)
+{
+    unsigned int remaining = count;
     unsigned int chunk;
     unsigned int buf_remaining;
     unsigned int transferred;
@@ -78,22 +82,23 @@ int rkt_buf_read(rkt_buf *ptr, char *out, unsigned int size) {
     while(remaining != 0) {
         buf_remaining = ptr->end - ptr->read_ptr;
         chunk = (buf_remaining <= remaining) ? buf_remaining : remaining;
-        transferred = copy_out(out, ptr->read_ptr, chunk);
+        transferred = copy_out(target, ptr->read_ptr, chunk);
 
         remaining -= transferred;
-        out += transferred;
+        target += transferred;
         ptr->read_ptr += transferred;
 
         if(ptr->read_ptr >= ptr->end) {
             ptr->read_ptr = ptr->top;
         }
     }
-    
+
     return 0;
 }
 
-int rkt_buf_write(rkt_buf *ptr, char *in, unsigned int size) {
-    unsigned int remaining = size;
+int rkt_buf_write(rkt_buf *ptr, char const * source, unsigned int count)
+{
+    unsigned int remaining = count;
     unsigned int chunk;
     unsigned int buf_remaining;
     unsigned int transferred;
@@ -101,16 +106,16 @@ int rkt_buf_write(rkt_buf *ptr, char *in, unsigned int size) {
     while(remaining != 0) {
         buf_remaining = ptr->end - ptr->write_ptr;
         chunk = (buf_remaining < remaining) ? buf_remaining : remaining;
-        transferred = copy_in(ptr->write_ptr, in, chunk);
+        transferred = copy_in(ptr->write_ptr, source, chunk);
 
         remaining -= transferred;
-        in += transferred;
+        source += transferred;
         ptr->write_ptr += transferred;
 
         if(ptr->write_ptr >= ptr->end) {
             ptr->write_ptr = ptr->top;
         }
     }
-    
+
     return 0;
 }
