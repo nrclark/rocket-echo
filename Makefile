@@ -23,8 +23,10 @@ $(MODULE): $(SOURCES)
 clean: unload
 	make -C $(MODULE_BUILD_DIR) M=$(PWD) clean
 
+# To pass load-time parameters to the module, call make as follows:
+# make load params="param1 param2" param1=foo param2=bar
 load: $(MODULE) unload
-	sudo insmod $(MODULE) $(loadparams)
+	sudo insmod $(MODULE) $(foreach x,$(params),$(if $($(x)),$(x)=$($(x)),))
 
 info: $(MODULE)
 	sudo modinfo $(MODULE)
