@@ -9,7 +9,9 @@
  * moving data) or as part of a kernel module (using copy_to_user/copy_from_user
  * for moving data). */
 
-#ifdef KERNEL_MODE
+#define _RKT_KERNEL_MODE
+
+#ifdef _RKT_KERNEL_MODE
 #include <linux/string.h>
 #include <linux/types.h>
 #include <asm/uaccess.h>
@@ -21,14 +23,14 @@
 #include "_rkt_buf.h"
 
 /** @brief Function for copying data out of the library. Uses copy_to_user
- * if KERNEL_MODE is defined.
+ * if _RKT_KERNEL_MODE is defined.
  * @param[out] dest Pointer to output data.
  * @param[in] source Pointer to input data.
  * @param[in] size Number of bytes to copy.
  * @return The number of bytes copied. */
 inline static unsigned int copy_in(char *dest, char const *source, unsigned int size)
 {
-#ifdef KERNEL
+#ifdef _RKT_KERNEL_MODE
     int errcount;
     errcount = copy_to_user(dest, source, size);
     if(errcount != 0) {
@@ -42,14 +44,14 @@ inline static unsigned int copy_in(char *dest, char const *source, unsigned int 
 }
 
 /** @brief Function for copying data out of the library. Uses copy_from_user
- * if KERNEL_MODE is defined.
+ * if _RKT_KERNEL_MODE is defined.
  * @param[out] dest Pointer to output data.
  * @param[in] source Pointer to input data.
  * @param[in] size Number of bytes to copy.
  * @return The number of bytes copied. */
 inline static unsigned int copy_out(char *dest, char const *source, unsigned int size)
 {
-#ifdef KERNEL
+#ifdef _RKT_KERNEL_MODE
     int errcount;
     errcount = copy_from_user(dest, source, size);
     if(errcount != 0) {
@@ -95,17 +97,23 @@ unsigned int rkt_buf_level(rkt_buf *ptr)
 /** @details This function uses copy_out() to move data, which allows it to be tested
  * in user-mode before taking it into kernel space. The function doesn't currently
  * do any underflow-checking, so that is left as an exercise to the caller. */
-int rkt_buf_read(rkt_buf *ptr, char *target, unsigned int count)
+rkt_errcode rkt_buf_read(rkt_buf *ptr, char *target, unsigned int count)
 {
     unsigned int remaining = count;
     unsigned int chunk;
     unsigned int buf_remaining;
     unsigned int transferred;
+    rkt_errcode errcode = RKT_OK;
 
     while(remaining != 0) {
         buf_remaining = ptr->end - ptr->read_ptr;
         chunk = (buf_remaining <= remaining) ? buf_remaining : remaining;
         transferred = copy_out(target, ptr->read_ptr, chunk);
+
+        if(transferred != chunk) {
+            errcode = RKT_ERR;
+            break;
+        }
 
         remaining -= transferred;
         target += transferred;
@@ -115,24 +123,30 @@ int rkt_buf_read(rkt_buf *ptr, char *target, unsigned int count)
             ptr->read_ptr = ptr->top;
         }
     }
-
-    return 0;
+    
+    return errcode;
 }
 
 /** @details This function uses copy_in() to move data, which allows it to be tested
  * in user-mode before taking it into kernel space. The function doesn't currently
  * do any overflow-checking, so that is left as an exercise to the caller. */
-int rkt_buf_write(rkt_buf *ptr, char const * source, unsigned int count)
+rkt_errcode rkt_buf_write(rkt_buf *ptr, char const * source, unsigned int count)
 {
     unsigned int remaining = count;
     unsigned int chunk;
     unsigned int buf_remaining;
     unsigned int transferred;
+    rkt_errcode errcode = RKT_OK;
 
     while(remaining != 0) {
         buf_remaining = ptr->end - ptr->write_ptr;
         chunk = (buf_remaining < remaining) ? buf_remaining : remaining;
         transferred = copy_in(ptr->write_ptr, source, chunk);
+
+        if(transferred != chunk) {
+            errcode = RKT_ERR;
+            break;
+        }
 
         remaining -= transferred;
         source += transferred;
@@ -143,5 +157,5 @@ int rkt_buf_write(rkt_buf *ptr, char const * source, unsigned int count)
         }
     }
 
-    return 0;
+    return errcode;
 }

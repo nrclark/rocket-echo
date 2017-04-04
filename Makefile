@@ -1,5 +1,5 @@
-MODULE_NAME := hello
-SOURCES := hello-main.c dummy.c dummy.h
+MODULE_NAME := rocket
+SOURCES := src/rocket-echo.c src/rkt_buf.c src/_rkt_buf.h
 
 MODULE := $(MODULE_NAME).ko
 MODULE_BUILD_DIR := /lib/modules/$(shell uname -r)/build
@@ -12,7 +12,7 @@ OBJS := $(filter %.o,$(SOURCES:%.c=%.o))
 obj-m += $(MODULE_NAME).o
 $(MODULE_NAME)-objs := $(OBJS)
 
-ccflags-y := -O0 -g
+ccflags-y := -O0 -g -Wall
 
 module: $(MODULE)
 all: module

@@ -10,6 +10,11 @@
 #ifndef _RKT_BUF_H_
 #define _RKT_BUF_H_
 
+typedef enum {
+    RKT_OK = 0,
+    RKT_ERR = 1
+} rkt_errcode;
+
 /** @brief Rocket-echo buffer storage type. */
 typedef struct rkt_buf {
     char * top; /**< top of the storage buffer. Generally constant. */
@@ -39,7 +44,7 @@ unsigned int rkt_buf_level(rkt_buf *ptr);
  * @returns Status of command.
  * @retval 0 Exit success (currently the only implemented return code) */
 
-int rkt_buf_read(rkt_buf *ptr, char *target, unsigned int count);
+rkt_errcode rkt_buf_read(rkt_buf *ptr, char *target, unsigned int count);
 
 /** @brief Reads data from a rkt_buf instance into an output buffer.
  * @param[in] ptr Pointer to a rkt_buf instance with data in it.
@@ -48,6 +53,6 @@ int rkt_buf_read(rkt_buf *ptr, char *target, unsigned int count);
  * @returns Status of command.
  * @retval 0 Exit success (currently the only implemented return code) */
 
-int rkt_buf_write(rkt_buf *ptr, char const * source, unsigned int size);
+rkt_errcode rkt_buf_write(rkt_buf *ptr, char const * source, unsigned int size);
 
 #endif
