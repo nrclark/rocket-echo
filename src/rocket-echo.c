@@ -164,7 +164,7 @@ static ssize_t rkt_read(struct file *filep, char *out, size_t len, loff_t *offp)
         return -EFAULT;
     }
 
-    printk(KERN_INFO "Rocket-echo: sent %d bytes back to the user.\n", len);
+    printk(KERN_INFO "Rocket-echo: sent %d bytes back to the user.\n", (unsigned int) len);
     return len;
 }
 
@@ -183,7 +183,7 @@ static ssize_t rkt_write(struct file *filep, const char *in, size_t len, loff_t 
 
     if (len > space) {
         len = space;
-        printk(KERN_ALERT "Warn: Rocket-echo truncated write to %d bytes", len);
+        printk(KERN_ALERT "Warn: Rocket-echo truncated write to %d bytes", (unsigned int) len);
     }
 
     result = rkt_buf_write(my_buf, in, len);
@@ -192,7 +192,7 @@ static ssize_t rkt_write(struct file *filep, const char *in, size_t len, loff_t 
         return -EFAULT;
     }
 
-    printk(KERN_INFO "Rocket-echo: received %d bytes from the user.\n", len);
+    printk(KERN_INFO "Rocket-echo: received %d bytes from the user.\n", (unsigned int) len);
     return len;
 }
 
