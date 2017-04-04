@@ -131,7 +131,7 @@ static void __exit rkt_exit(void)
 
 /** @brief Function called when a Rocket-echo device is opened.
  * @param[in] inodep Inode pointer for the target device.
- * @param[in] inodep File object for the target device.
+ * @param[in] filep File object for the target device.
  * @returns Exit code.
  * @retval 0 Exit uccess. */
 static int rkt_open(struct inode *inodep, struct file *filep)
