@@ -32,7 +32,7 @@ inline static unsigned int copy_in(char *dest, char const *source, unsigned int 
 {
 #ifdef _RKT_KERNEL_MODE
     int errcount;
-    errcount = copy_to_user(dest, source, size);
+    errcount = copy_from_user(dest, source, size);
     if(errcount != 0) {
         printk(KERN_ALERT "Rocket echo: copy_to_user error!\n");
     }
@@ -53,7 +53,7 @@ inline static unsigned int copy_out(char *dest, char const *source, unsigned int
 {
 #ifdef _RKT_KERNEL_MODE
     int errcount;
-    errcount = copy_from_user(dest, source, size);
+    errcount = copy_to_user(dest, source, size);
     if(errcount != 0) {
         printk(KERN_ALERT "Rocket echo: copy_from_user error!\n");
     }

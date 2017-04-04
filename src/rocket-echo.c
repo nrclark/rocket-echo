@@ -32,7 +32,7 @@ static struct class* my_class = NULL;
 static struct device* my_device = NULL;
 
 module_param(bufsize, uint, S_IRUGO);
-MODULE_PARM_DESC(bufsize, "Size of loopback buffer (in bytes)");
+MODULE_PARM_DESC(bufsize, "Size of loopback buffer (in bytes, default 256)");
 
 static int rkt_open(struct inode *inode, struct file *file);
 static int rkt_release(struct inode *inode, struct file *file);
@@ -120,7 +120,6 @@ static ssize_t rkt_read(struct file *filep, char *out, size_t len, loff_t *offp)
 
     if (len > current_level) {
         len = current_level;
-        printk(KERN_ALERT "Warn: Rocket-echo truncated read to %d bytes\n", len);
     }
 
     result = rkt_buf_read(my_buf, out, len);
