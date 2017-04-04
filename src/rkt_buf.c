@@ -123,7 +123,7 @@ rkt_errcode rkt_buf_read(rkt_buf *ptr, char *target, unsigned int count)
             ptr->read_ptr = ptr->top;
         }
     }
-    
+
     return errcode;
 }
 

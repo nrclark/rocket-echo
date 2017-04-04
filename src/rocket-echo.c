@@ -46,7 +46,8 @@ static struct file_operations fops = {
     .write = rkt_write
 };
 
-static int __init rkt_init(void) {
+static int __init rkt_init(void)
+{
     printk(KERN_INFO "Initializing Rocket-echo module.");
     open_count = 0;
     my_buf = kmalloc(sizeof(rkt_buf), GFP_KERNEL);
@@ -68,8 +69,8 @@ static int __init rkt_init(void) {
         printk(KERN_ALERT "Error: Rocket-echo failed to receive a device major number.\n");
         return device_major;
     }
-    
-    printk(KERN_INFO "Rocket-echo received device major number %d\n", device_major); 
+
+    printk(KERN_INFO "Rocket-echo received device major number %d\n", device_major);
     my_class = class_create(THIS_MODULE, CLASS_NAME);
 
     if (IS_ERR(my_class)) {
@@ -91,7 +92,8 @@ static int __init rkt_init(void) {
     return 0;
 }
 
-static void __exit rkt_exit(void) {
+static void __exit rkt_exit(void)
+{
     if(storage != NULL) {
         kfree(storage);
     }
@@ -108,13 +110,15 @@ static void __exit rkt_exit(void) {
     return;
 }
 
-static int rkt_open(struct inode *inodep, struct file *filep) {
+static int rkt_open(struct inode *inodep, struct file *filep)
+{
     open_count++;
     printk(KERN_INFO "Rocket-echo: device has been opened %d times\n", open_count);
     return 0;
 }
 
-static ssize_t rkt_read(struct file *filep, char *out, size_t len, loff_t *offp) {
+static ssize_t rkt_read(struct file *filep, char *out, size_t len, loff_t *offp)
+{
     int result;
     unsigned int current_level = rkt_buf_level(my_buf);
 
@@ -123,7 +127,7 @@ static ssize_t rkt_read(struct file *filep, char *out, size_t len, loff_t *offp)
     }
 
     result = rkt_buf_read(my_buf, out, len);
-    
+
     if(result != 0) {
         printk(KERN_ALERT "Error: Rocket-echo buffer read failed with code: %d\n", result);
         return -EFAULT;
@@ -133,7 +137,8 @@ static ssize_t rkt_read(struct file *filep, char *out, size_t len, loff_t *offp)
     return len;
 }
 
-static ssize_t rkt_write(struct file *filep, const char *in, size_t len, loff_t *offp) {
+static ssize_t rkt_write(struct file *filep, const char *in, size_t len, loff_t *offp)
+{
     int result;
     unsigned int space;
     space = bufsize - rkt_buf_level(my_buf);
@@ -153,7 +158,8 @@ static ssize_t rkt_write(struct file *filep, const char *in, size_t len, loff_t 
     return len;
 }
 
-static int rkt_release(struct inode* inodep, struct file* filep) {
+static int rkt_release(struct inode* inodep, struct file* filep)
+{
     printk(KERN_INFO "Rocket-echo: device closed OK.\n");
     return 0;
 }
