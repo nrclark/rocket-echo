@@ -132,7 +132,7 @@ static void __exit rkt_exit(void)
 /** @brief Function called when a Rocket-echo device is opened.
  * @param[in] inodep Inode pointer for the target device.
  * @param[in] inodep File object for the target device.
- * @returns Exit code. 
+ * @returns Exit code.
  * @retval 0 Exit uccess. */
 static int rkt_open(struct inode *inodep, struct file *filep)
 {
@@ -199,7 +199,7 @@ static ssize_t rkt_write(struct file *filep, const char *in, size_t len, loff_t 
 /** @brief Function called when a Rocket-echo device is written.
  * @param[in] filep File pointer to the target device (ignored).
  * @param[in] inodep Inode pointer for the target device (ignored).
- * @returns Exit code. 
+ * @returns Exit code.
  * @retval 0 Exit uccess. */
 static int rkt_release(struct inode* inodep, struct file* filep)
 {
